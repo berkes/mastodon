@@ -113,7 +113,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.9'
 end
 
-group :production, :test do
+group :production, :staging, :test do
   gem 'private_address_check', '~> 0.5'
 end
 
@@ -151,7 +151,7 @@ group :development do
   gem 'stackprof'
 end
 
-group :production do
+group :production, :staging do
   gem 'lograge', '~> 0.11'
   gem 'redis-rails', '~> 5.0'
 end
