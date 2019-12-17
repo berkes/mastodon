@@ -36,7 +36,7 @@ namespace :env_vars do
 end
 
 namespace :systemd do
-  %i[sidekiq streaming web].each do |service|
+  %i[mastodon-sidekiq mastodon-streaming].each do |service|
     desc "Reload #{service} service"
     task "#{service}:reload".to_sym do
       on roles(:app) do
@@ -52,9 +52,23 @@ namespace :systemd do
     end
   end
 
+  desc "Reload web service"
+  task "web:reload".to_sym do
+    on roles(:app) do
+      systemctl :reload, "physalia_staging"
+    end
+  end
+
+  desc "Show the status of web service"
+  task "web:status".to_sym do
+    on roles(:app) do
+      systemctl :status, "physalia_staging"
+    end
+  end
+
   def systemctl(action, service)
     # runs e.g. "sudo restart mastodon-sidekiq.service"
-    sudo :systemctl, action, "#{fetch(:application)}-#{service}.service"
+    sudo :systemctl, action, "#{service}.service"
   end
 end
 
