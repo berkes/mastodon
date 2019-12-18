@@ -36,11 +36,18 @@ namespace :env_vars do
 end
 
 namespace :systemd do
-  %i[mastodon-sidekiq mastodon-streaming].each do |service|
+  %i[sidekiq streaming].each do |service|
     desc "Reload #{service} service"
     task "#{service}:reload".to_sym do
       on roles(:app) do
-        systemctl :reload, service
+        systemctl :reload, "mastodon-#{service}"
+      end
+    end
+
+    desc "Restart #{service} service"
+    task "#{service}:restart".to_sym do
+      on roles(:app) do
+        systemctl :restart, "mastodon-#{service}"
       end
     end
 
@@ -73,7 +80,7 @@ namespace :systemd do
 end
 
 after 'deploy:publishing', 'systemd:web:reload'
-after 'deploy:publishing', 'systemd:sidekiq:reload'
-after 'deploy:publishing', 'systemd:streaming:reload'
+after 'deploy:publishing', 'systemd:sidekiq:restart'
+after 'deploy:publishing', 'systemd:streaming:restart'
 
 after 'deploy:starting', 'env_vars:load'
